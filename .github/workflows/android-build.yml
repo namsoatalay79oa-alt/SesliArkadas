@@ -1,3 +1,4 @@
+
 name: Build Android APK
 
 on:
@@ -14,12 +15,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Extract project
+        run: unzip -o SesliArkadasAndroidStudioProjesi.zip -d .
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10'
 
       - name: Build APK
         run: gradle assembleDebug

@@ -15,8 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Extract project
-        run: unzip -o SesliArkadasAndroidStudioProjesi.zip -d .
+      - name: Find and extract project
+        run: |
+          ZIP_FILE=$(find . -maxdepth 2 -name 'SesliArkadasAndroidStudioProjesi*.zip' | head -n 1)
+          test -n "$ZIP_FILE"
+          mkdir -p project
+          unzip -o "$ZIP_FILE" -d project
+          test -d project/app
 
       - uses: actions/setup-java@v4
         with:
@@ -28,9 +33,9 @@ jobs:
           gradle-version: '8.10'
 
       - name: Build APK
-        run: gradle assembleDebug
+        run: gradle -p project assembleDebug
 
       - uses: actions/upload-artifact@v4
         with:
           name: Sesli-Arkadas-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: project/app/build/outputs/apk/debug/app-debug.apk
